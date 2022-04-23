@@ -45,5 +45,6 @@ module.exports = {
         alwaysTryTypes: true,
       },
     },
+    'babel-module': {},
   },
 };
