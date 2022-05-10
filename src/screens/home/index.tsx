@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 
 function HomeScreen() {
+  const navigation = useNavigation();
+
   const handleNotification = () => {
     PushNotification.localNotification({
       channelId: 'link-bird-fcm-channel',
@@ -20,6 +23,9 @@ function HomeScreen() {
       allowWhileIdle: true,
     });
   };
+  const navigateToShareScreen = useCallback(() => {
+    navigation.navigate('/share');
+  }, []);
 
   useEffect(() => {
     PushNotification.getChannels(function (channel_ids) {
@@ -31,6 +37,7 @@ function HomeScreen() {
     <View>
       <Text>HomeScreen</Text>
       <Button title="click me" onPress={handleNotification} />
+      <Button title="share" onPress={navigateToShareScreen} />
     </View>
   );
 }

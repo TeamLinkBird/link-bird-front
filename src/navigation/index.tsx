@@ -1,25 +1,17 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { createRef, useState } from 'react';
+import React, { createRef, forwardRef, useState } from 'react';
 import { View, Text } from 'react-native';
 import MainTabNavigator from './MainTabNavigator';
 import AuthStackNavigator from './auth';
 
 const RootStack = createNativeStackNavigator();
-const navigationRef = createRef();
 
-function Navigation() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const login = () => {
-    setIsLoggedIn(true);
-    console.log('login');
-  };
-
+function Navigation(props, ref) {
   return (
     <>
-      <NavigationContainer ref={navigationRef}>
-        <RootStack.Navigator>
+      <NavigationContainer ref={ref}>
+        <RootStack.Navigator screenOptions={{ headerShown: false }}>
           <RootStack.Screen
             name="AuthStackNavigator"
             component={AuthStackNavigator}
@@ -34,4 +26,4 @@ function Navigation() {
   );
 }
 
-export default Navigation;
+export default forwardRef(Navigation);
