@@ -11,6 +11,7 @@ import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
 import com.linkbird.newarchitecture.MainApplicationReactNativeHost;
 import com.meedan.ShareMenuPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;  // <--- Import Package
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new MyReactNativePackage());
           return packages;
         }
+        
 
         @Override
         protected String getJSMainModuleName() {
