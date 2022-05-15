@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LinkBird</string>
+    <string name="kakao_app_key">4350fe320894323e30dfa89af343efb5</string>
 </resources>

@@ -10,8 +10,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-seoul/kakao-login": "^4.0.0",
+    "axios": "^0.27.2",
     "react": "17.0.2",
     "react-native": "0.68.1",
+    "react-native-device-info": "^8.7.1",
     "react-native-share-menu": "^5.0.5"
   },
   "devDependencies": {
@@ -46,5 +49,6 @@
       "json",
       "node"
     ]
-  }
+  },
+  "Proxy": "http://ssd018.synology.me"
 }

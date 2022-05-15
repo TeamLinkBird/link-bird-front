@@ -2,6 +2,8 @@
   package="com.linkbird">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
       android:name=".MainApplication"
@@ -27,5 +29,22 @@
             <data android:mimeType="image/*" />
         </intent-filter>
       </activity>
+      <activity 
+        android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+        android:exported="true">
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+        
+          <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
+          <data android:host="oauth"
+                android:scheme="kakao4350fe320894323e30dfa89af343efb5" />
+        </intent-filter>
+      </activity>
+      <activity
+        android:name="com.nhn.android.naverlogin.ui.OAuthLoginInAppBrowserActivity"
+        android:label="OAuth2.0 In-app"
+        android:screenOrientation="portrait" />
     </application>
 </manifest>
