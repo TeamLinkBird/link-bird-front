@@ -5,15 +5,9 @@ import {
   unlink,
 } from '@react-native-seoul/kakao-login';
 import axios from 'axios';
-import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Text, View, Image, Linking } from 'react-native';
+import React, { useState} from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-
-const androidKeys = {
-  kConsumerKey: 'ReQM2zKSDaSCjdUKLmCj',
-  kConsumerSecret: 'vQnTQuoaWa',
-  kServiceAppName: '링크버드',
-};
 
 const App = () => {
   const [Id, setId] = useState('');
@@ -21,15 +15,24 @@ const App = () => {
     string | undefined | GetProfileResponse
   >();
   const [out, setOut] = useState<string>();
-  const [naverToken, setNaverToken] = React.useState<
-    TokenResponse | undefined | null | string
-  >(null);
+  const [access,setAccess] = useState<string>();
+  const [referesh,setReferesh] = useState<string>();
+  const [kakaoAccess,setKaKaoAccess] = useState<string>();
 
   const signInWithKakao = async (): Promise<void> => {
     try {
       const token = await login();
 
-      setResult(JSON.stringify(token));
+      const res = await axios.post('http://10.0.2.2:8080/login/kakao',{
+        "access_Token": token.accessToken,
+        "refresh_Token": token.refreshToken
+      })
+
+      setResult(JSON.stringify(res.data))
+      setAccess(res.data.access_Token)
+      setReferesh(res.data.refresh_Token)
+      setKaKaoAccess(token.accessToken)
+
     } catch (e) {
       if (e instanceof Error) {
         setResult(JSON.stringify(e.message));
@@ -41,66 +44,54 @@ const App = () => {
 
   const signOutWithKakao = async (): Promise<void> => {
     const message = await logout();
+    const config = {
+      headers: { Authorization: `Bearer ${access}` }
+    };
+    const res = await axios.post('http://10.0.2.2:8080/logout',null,config)
 
-    setOut(message);
+    setResult(res)
   };
 
-  const getKakaoProfile = async (): Promise<void> => {
-    const profile = await getProfile();
+  const signInWithId = async (): Promise<void> => {
+    const deviceId = await DeviceInfo.getAndroidId();
+    setId(deviceId);
 
-    setResult(JSON.stringify(profile));
-  };
+    try {
+      const json = await axios.post('http://10.0.2.2:8080/login/unsigned',{
+          id: deviceId,
+        },
+      );
 
-  const unlinkKakao = async (): Promise<void> => {
-    const message = await unlink();
+      setResult(JSON.stringify(json.data))
+      setAccess(json.data.access_Token)
+      setReferesh(json.data.refresh_Token)
+    } catch (e) {
+      setResult(e?.message);
+    }
+  }
 
-    setResult(message);
-  };
+  const refresh = async(): Promise<void> => {
+    const res = await axios.post("http://10.0.2.2:8080/refresh_Token",{
+      refresh_Token: referesh
+    })
+
+    setResult(JSON.stringify(res.data))
+  }
+
   return (
     <View>
       <Text>{result}</Text>
       <Text>{out}</Text>
+      <Text>{kakaoAccess}/</Text>
       <Text onPress={() => signInWithKakao()}>카카오 로그인</Text>
       <Text onPress={() => signOutWithKakao()}>카카오 로그아웃</Text>
-      <Text onPress={() => getKakaoProfile()}>카카오 프로필 얻기</Text>
       <Text
-        onPress={async () => {
-          // Linking.openURL(
-          //   'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=21c4f169dfe1f67c019d92b1efc917c7&redirect_uri=http://ssd018.synology.me/login/kakao'
-          // );
-          const res = await axios.get(
-            'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=21c4f169dfe1f67c019d92b1efc917c7&redirect_uri=http://ssd018.synology.me/login/kakao'
-          );
-          setResult(JSON.stringify(res));
-        }}
+        onPress={() => signInWithId()}
       >
-        서버로 로그인
+        기기 로그인
       </Text>
-      <Text
-        onPress={async () => {
-          const deviceId = await DeviceInfo.getAndroidId();
-          setId(deviceId);
-        }}
-      >
-        기기 ID 불러오기
-      </Text>
-      <Text
-        onPress={async () => {
-          try {
-            const json = await axios({
-              url: 'http://sbbro.sytes.net:80/login/unsigned',
-              method: 'get',
-              data: {
-                id: Id,
-              },
-            });
-          } catch (e) {
-            setResult(e?.message);
-          }
-        }}
-      >
-        기기로그인
-      </Text>
+      <Text>기기로그아웃</Text>
+      <Text onPress={() => refresh()}>토큰 갱신</Text>
     </View>
   );
 };

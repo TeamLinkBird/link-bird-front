@@ -9,6 +9,7 @@ buildscript {
         compileSdkVersion = 31
         targetSdkVersion = 31
         kotlinVersion = '1.5.30'
+        googlePlayServicesAuthVersion = "17.0.0"
 
         if (System.properties['os.arch'] == "aarch64") {
             // For M1 Users we need to use the NDK 24 which added support for aarch64
@@ -28,6 +29,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.0.4")
+        classpath 'com.google.gms:google-services:4.3.10'
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("de.undercouch:gradle-download-task:4.1.2")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
