@@ -265,6 +265,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation project(':react-native-device-info')
 
     // // Import the Firebase BoM
     // implementation platform('com.google.firebase:firebase-bom:29.3.1')

@@ -10,7 +10,7 @@ function AuthScreen() {
     <View>
       <Text>AuthScreen</Text>
       <Button
-        title="login"
+        title="kakaologin"
         onPress={() => navigation.navigate('MainTabNavigator')}
       />
     </View>

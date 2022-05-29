@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -14,6 +15,15 @@ import com.meedan.ShareMenuPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;  // <--- Import Package
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.util.Base64;
+import android.util.Log;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -55,6 +65,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    getHashKey();
     // If you opted-in for the New Architecture, we enable the TurboModule system
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     SoLoader.init(this, /* native exopackage */ false);
@@ -88,6 +99,28 @@ public class MainApplication extends Application implements ReactApplication {
         e.printStackTrace();
       } catch (InvocationTargetException e) {
         e.printStackTrace();
+      }
+    }
+  }
+  
+  private void getHashKey(){
+    PackageInfo packageInfo = null;
+    try {
+      packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
+    }
+
+    if (packageInfo == null)
+    Log.e("KeyHash", "KeyHash:null");
+
+    for (Signature signature : packageInfo.signatures) {
+      try {
+        MessageDigest md = MessageDigest.getInstance("SHA");
+        md.update(signature.toByteArray());
+        Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+      } catch (NoSuchAlgorithmException e) {
+        Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
       }
     }
   }
